@@ -1,5 +1,9 @@
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import {
+  createAppContainer
+} from 'react-navigation';
+import {
+  createStackNavigator
+} from 'react-navigation-stack';
 
 import StartScreen from './screens/StartScreen';
 import Onboarding from './screens/Onboarding';
@@ -20,6 +24,7 @@ const MainNavigator = createStackNavigator({
     navigationOptions: {
       header: null,
     },
+
   },
 });
 

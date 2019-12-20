@@ -1,11 +1,31 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {FlatList, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
-export default class Map extends Component {
+export default class Maps extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Map</Text>
+        <FlatList
+          data={[
+            {key: 'Devin'},
+            {key: 'Dan'},
+            {key: 'Dominic'},
+            {key: 'Jackson'},
+            {key: 'James'},
+            {key: 'Joel'},
+            {key: 'John'},
+            {key: 'Jillian'},
+            {key: 'Jimmy'},
+            {key: 'Julie'},
+          ]}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('MapsDetails')}
+            >
+              <Text style={styles.item}>{item.key}</Text>
+            </TouchableOpacity>
+          )}
+        />
       </View>
     );
   }
@@ -13,22 +33,12 @@ export default class Map extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
-    marginTop: 50,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    flex: 1,
+    paddingTop: 22,
   },
-  text: {
-    fontSize: 36,
-    padding: 20,
-    textAlign: 'center',
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
   },
 });

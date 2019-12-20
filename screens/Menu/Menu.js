@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
+import {createStackNavigator} from 'react-navigation-stack';
 
 import Profile from './Profile';
 import Map from './Map';
 import Setting from './Setting';
+import MapsDetails from './MapsDetails';
+import RunScreen from './RunScreen';
+import Workout from './Workout';
 
 class Menu extends Component {
   render() {
@@ -16,13 +20,32 @@ class Menu extends Component {
   }
 }
 
+const MapStack = createStackNavigator({
+  Map: {
+    screen: Map,
+  },
+  MapsDetails: {
+    screen: MapsDetails,
+    navigationOptions: {
+      visible: false,
+      header: null,
+    },
+  },
+  RunScreen: {
+    screen: RunScreen,
+  },
+  Workout: {
+    screen: Workout,
+  },
+});
+
 export default createMaterialBottomTabNavigator(
   {
     Profile: {
       screen: Profile,
     },
     Map: {
-      screen: Map,
+      screen: MapStack,
     },
     Setting: {
       screen: Setting,
