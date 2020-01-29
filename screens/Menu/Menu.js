@@ -28,7 +28,6 @@ const MapStack = createStackNavigator({
     screen: MapsDetails,
     navigationOptions: {
       visible: false,
-      header: null,
     },
   },
   RunScreen: {

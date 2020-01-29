@@ -7,22 +7,23 @@ export default class Maps extends Component {
       <View style={styles.container}>
         <FlatList
           data={[
-            {key: 'Devin'},
-            {key: 'Dan'},
-            {key: 'Dominic'},
-            {key: 'Jackson'},
-            {key: 'James'},
-            {key: 'Joel'},
-            {key: 'John'},
-            {key: 'Jillian'},
-            {key: 'Jimmy'},
-            {key: 'Julie'},
+            {key: 'Zollverein', distance: '12km', time: '6min'},
+            {key: 'Bottrop', distance: '15km', time: '12min'},
+            {key: 'Innenstadt', distance: '30km', time: '65min'},
+            {key: 'Baldeneysee', distance: '5km', time: '30min'},
           ]}
           renderItem={({item}) => (
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('MapsDetails')}
+              onPress={() => this.props.navigation.navigate('MapsDetails', {
+                route: item.key,
+                distance: item.distance,
+                time: item.time
+              })}
             >
-              <Text style={styles.item}>{item.key}</Text>
+              <View>
+                <Text style={styles.item}>{item.key}</Text>
+                <Text style={styles.details}>{item.distance} {item.time}</Text>
+              </View>
             </TouchableOpacity>
           )}
         />
@@ -41,4 +42,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
   },
+  details: {
+    fontSize: 14,
+    paddingBottom: 50,
+  }
 });
