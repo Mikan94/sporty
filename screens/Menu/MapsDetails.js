@@ -1,79 +1,79 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
 import MapView, { Marker, Polygon } from 'react-native-maps';
 
-const zollverein = [
-  {name: '1', latitude: 37.8025259, longitude: -122.4351431},
-  {name: '2', latitude: 37.7896386, longitude: -122.421646},
-  {name: '3', latitude: 37.7665248, longitude: -122.4161628},
-  {name: '4', latitude: 37.7734153, longitude: -122.4577787},
-  {name: '5', latitude: 37.7948605, longitude: -122.4596065}
-];
-
-const bottrop = [
-  {name: "1", latitude: 36.8025259, longitude: -122.4451431},
-  {name: "2", latitude: 36.7896386, longitude: -122.431646},
-  {name: "3", latitude: 36.7665248, longitude: -122.4261628},
-  {name: "4", latitude: 36.7734153, longitude: -122.4677787},
-  {name: "5", latitude: 36.7948605, longitude: -122.4796065},
-]
-
-
-
 export default class MapsDetails extends Component {
-  state = {
-    data: bottrop,
-  }
-
   render() { 
- 
+    const route = this.props.navigation.getParam('route', 'no data')
+    const latitude = this.props.navigation.getParam('latitude', 'no data')
+    const longitude = this.props.navigation.getParam('longitude', 'no data')
+    const name = this.props.navigation.getParam('name', 'no data')
+    const distance = this.props.navigation.getParam('distance', 'no data')
+    const exercise = this.props.navigation.getParam('exercise', 'no data')
+    const alertTime = distance/exercise;
+
     return (
-      <MapView
-        style={{ flex: 1}}
+      <View style={styles.container}>
+        <MapView
+        style={styles.map}
         region={{
-          latitude: this.state.data[1].latitude,
-          longitude: this.state.data[1].longitude,
+          latitude: latitude,
+          longitude: longitude,
           latitudeDelta: 0.09,
           longitudeDelta: 0.035
         }}>
 
         <Polygon
-          coordinates={this.state.data}/>
+          coordinates={route}/>
 
           <Marker
-         coordinate={{latitude: this.state.data[1].latitude, longitude: this.state.data[1].longitude}}>
+         coordinate={{latitude: latitude, longitude: longitude }}>
           </Marker>
 
           <View>
-          <Text>Distanz: {this.props.navigation.getParam('distance', 'no data')}</Text>
-          <Text>Zeit: {this.props.navigation.getParam('time', 'no data')}</Text>
-        </View>
-
+            <Text>Name: {name}</Text>
+            <Text>Distanz: {distance}km </Text>
+            <Text>Übungen: {exercise}</Text>
+            <Text>Time: {alertTime}</Text>
+          </View>
         </MapView>
 
-        
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => this.props.navigation.navigate('RunScreen')}>
+            <Text style={styles.text}>starten</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
-    marginTop: 50,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    flex: 1,
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
   },
   text: {
-    fontSize: 36,
-    padding: 20,
+    fontSize: 16,
+    padding: 10,
     textAlign: 'center',
+    color: 'white',
   },  
+  btn: {
+    backgroundColor: 'black',
+    textAlign: 'center',
+    color: 'red',
+    bottom: 50,
+    position: 'absolute',
+  },
+  btn2: {
+    backgroundColor: 'black',
+    textAlign: 'center',
+    color: 'red',
+    bottom: 150,
+    position: 'absolute',
+  }
 });

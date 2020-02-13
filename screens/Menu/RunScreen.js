@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Button, Alert} from 'react-native';
+import MapView, { Marker, Polygon } from 'react-native-maps';
 
 export default class StopWatch extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ export default class StopWatch extends Component {
     this.setState({timer});
 
     this.setState({startDisable: true});
-  };
+    }; 
 
   onButtonStop = () => {
     clearInterval(this.state.timer);
@@ -63,6 +64,14 @@ export default class StopWatch extends Component {
           style={[styles.button, {backgroundColor: '#FF6F00'}]}
         >
           <Text style={styles.buttonText}>STOP</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('Finished')}
+          activeOpacity={0.6}
+          style={[styles.button, {backgroundColor: '#FF6F00'}]}
+        >
+          <Text style={styles.buttonText}>Beenden</Text>
         </TouchableOpacity>
 
         <Button
@@ -97,4 +106,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#000',
   },
+
+
 });

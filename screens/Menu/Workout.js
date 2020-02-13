@@ -1,103 +1,84 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Accelerometer} from 'expo-sensors';
+import React, {Component} from 'react';  
+import {Platform, StyleSheet, Text, View, Animated, TouchableOpacity} from 'react-native';  
+  
+export default class Workout extends Component {  
+    state={  
+        progressStatus: 60,  
+    }  
+    anim = new Animated.Value(60);  
+    componentDidMount(){
+    } 
 
-export default class Workout extends Component {
-  state = {
-    accelerometerData: {},
-  };
-
-  componentDidMount() {
-    this._toggle();
+  onButtonStart(){
+      _animateHandler = Animated.timing(
+        this.anim.addListener(({value})=> {  
+          this.setState({progressStatus: parseInt(value,10)});  
+      }),
+      Animated.timing(this.anim,{  
+           toValue: 0,  
+           duration: 59000,  
+      }).start()
+      );
   }
 
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
-
-  _toggle = () => {
-    if (this._subscription) {
-      this._unsubscribe();
-    } else {
-      this._subscribe();
-    }
-  };
-
-  _slow = () => {
-    Accelerometer.setUpdateInterval(1000);
-  };
-
-  _fast = () => {
-    Accelerometer.setUpdateInterval(16);
-  };
-
-  _subscribe = () => {
-    this._subscription = Accelerometer.addListener(accelerometerData => {
-      this.setState({accelerometerData});
-    });
-  };
-
-  _unsubscribe = () => {
-    this._subscription && this._subscription.remove();
-    this._subscription = null;
-  };
-
-  render() {
-    let {x, y, z} = this.state.accelerometerData;
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>
-          Accelerometer: (in Gs where 1 G = 9.81 m s^-2)
-        </Text>
-        <Text style={styles.text}>
-          x: {round(x)} y: {round(y)} z: {round(z)}
-        </Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={this._toggle} style={styles.button}>
-            <Text>Toggle</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._slow}
-            style={[styles.button, styles.middleButton]}
-          >
-            <Text>Slow</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this._fast} style={styles.button}>
-            <Text>Fast</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+  onButtonStopp(){
+    _animateHandler = Animated.timing(
+    Animated.timing(this.anim).stop()
     );
-  }
 }
 
-function round(n) {
-  if (!n) {
-    return 0;
-  }
 
-  return Math.floor(n * 100) / 100;
-}
 
-const styles = StyleSheet.create({
-  container: {
-    margin: 10,
-    marginTop: 50,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  text: {
-    fontSize: 36,
-    padding: 20,
-    textAlign: 'center',
-  },
-  buttonContainer: {},
-});
+
+  render() {  
+    return (  
+      <View style={styles.container}>  
+            <Animated.View  
+                style={[  
+                    styles.inner,{width: this.state.progressStatus +"%"},  
+                ]}  
+            />  
+            <Animated.Text style={styles.label}>  
+                    {this.state.progressStatus } Sekunden  
+            </Animated.Text>  
+
+            <TouchableOpacity onPress={() => this.onButtonStart()} style={styles.btnContent}>
+            <View><Text>Start Animated</Text></View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onButtonStopp()} style={styles.btnContent}>
+            <View><Text>Stopp Animated</Text></View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btnContent} onPress={() => this.props.navigation.navigate('Finished')}>
+            <View><Text>Fetisch!</Text></View>
+            </TouchableOpacity>
+
+      </View>  
+    );  
+  }  
+}  
+const styles = StyleSheet.create({  
+    container: {  
+    width: "100%",  
+    height: 40,  
+    padding: 3,  
+    borderColor: "#FAA",  
+    borderWidth: 3,  
+    borderRadius: 30,  
+    marginTop: 200,  
+    justifyContent: "center",  
+  },  
+  inner:{  
+    width: "100%",  
+    height: 30,  
+    borderRadius: 15,  
+    backgroundColor:"green",  
+  },  
+  label:{  
+    fontSize:23,  
+    color: "black",  
+    position: "absolute",  
+    zIndex: 1,  
+    alignSelf: "center",  
+  }  
+});  

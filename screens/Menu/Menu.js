@@ -9,6 +9,7 @@ import Setting from './Setting';
 import MapsDetails from './MapsDetails';
 import RunScreen from './RunScreen';
 import Workout from './Workout';
+import Finished from './Finished';
 
 class Menu extends Component {
   render() {
@@ -36,6 +37,9 @@ const MapStack = createStackNavigator({
   Workout: {
     screen: Workout,
   },
+  Finished: {
+    screen: Finished,
+  }
 });
 
 export default createMaterialBottomTabNavigator(
