@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Button, Alert} from 'react-native';
-import MapView, { Marker, Polygon } from 'react-native-maps';
+import {StyleSheet, Text, View, TouchableOpacity, Animated} from 'react-native';
+import MapView, { Marker, Polyline } from 'react-native-maps';
+import {Pedometer} from 'expo-sensors';
 
-export default class StopWatch extends Component {
+import ProgressBar from './ProgressBar';
+import Finished from './Finished';
+
+export default class RunScreen extends Component{
   constructor(props) {
     super(props);
 
@@ -11,10 +15,12 @@ export default class StopWatch extends Component {
       minutes_Counter: '00',
       seconds_Counter: '00',
       startDisable: false,
-    };
+      isPedometerAvailable: "checking",
+      currentStepCount: 0,
+    }
   }
 
-  onButtonStart = () => {
+  _onButtonStart = () => {
     let timer = setInterval(() => {
       var num = (Number(this.state.seconds_Counter) + 1).toString(),
         count = this.state.minutes_Counter;
@@ -32,22 +38,74 @@ export default class StopWatch extends Component {
     this.setState({timer});
 
     this.setState({startDisable: true});
-    }; 
+    this._subscribe();
 
-  onButtonStop = () => {
+    this.ProgressBar.startProgressbar();
+    this.Finished.startMap();
+
+  }; 
+
+  _onButtonStop = () => {
     clearInterval(this.state.timer);
     this.setState({startDisable: false});
+    this.ProgressBar.stoppProgressbar();
+    this.Finished.stoppMap();
   };
+
+  _subscribe = () => {
+    this._subscription = Pedometer.watchStepCount(result => {
+      this.setState({
+        currentStepCount: result.steps
+      });
+    });
+
+    Pedometer.isAvailableAsync().then(
+      result => {
+        this.setState({
+          isPedometerAvailable: String(result)
+        });
+      },
+      error => {
+        this.setState({
+          isPedometerAvailable: "Could not get isPedometerAvailable: " + error
+        });
+      }
+    );
+
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 1);
+    Pedometer.getStepCountAsync(start, end).then(
+      result => {
+        this.setState({ pastStepCount: result.steps });
+      },
+      error => {
+        this.setState({
+          pastStepCount: "Could not get stepCount: " + error
+        });
+      }
+    );
+  };
+
 
   render() {
     return (
       <View style={styles.MainContainer}>
+        <Finished ref={ref => (this.Finished = ref)} />
+
+        
+
+        <ProgressBar ref={ref => (this.ProgressBar = ref)} />
+
+
+        <Text style={styles.counterText}>{this.state.currentStepCount}</Text>
+
         <Text style={styles.counterText}>
           {this.state.minutes_Counter} : {this.state.seconds_Counter}
         </Text>
 
         <TouchableOpacity
-          onPress={this.onButtonStart}
+          onPress={this._onButtonStart}
           activeOpacity={0.6}
           style={[
             styles.button,
@@ -59,7 +117,7 @@ export default class StopWatch extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={this.onButtonStop}
+          onPress={this._onButtonStop}
           activeOpacity={0.6}
           style={[styles.button, {backgroundColor: '#FF6F00'}]}
         >
@@ -74,10 +132,13 @@ export default class StopWatch extends Component {
           <Text style={styles.buttonText}>Beenden</Text>
         </TouchableOpacity>
 
-        <Button
-          title="Übung starten"
+        <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Workout')}
-        />
+          activeOpacity={0.6}
+          style={[styles.button, {backgroundColor: '#FF6F00'}]}
+        >
+          <Text style={styles.buttonText}>Übung</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -86,7 +147,7 @@ export default class StopWatch extends Component {
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
@@ -103,9 +164,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   counterText: {
-    fontSize: 28,
+    fontSize: 48,
     color: '#000',
+    fontWeight: '800',
   },
-
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  label:{  
+    fontSize:23,  
+    color: "black",  
+    position: "absolute",  
+    zIndex: 1,  
+    alignSelf: "center",  
+  } 
 
 });

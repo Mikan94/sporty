@@ -3,12 +3,14 @@ import {Platform, StyleSheet, Text, View, Animated, TouchableOpacity} from 'reac
   
 export default class Workout extends Component {  
     state={  
-        progressStatus: 60,  
+        progressStatus: 60,
+        x: 0,  
     }  
-    anim = new Animated.Value(60);  
+  
     componentDidMount(){
     } 
 
+  anim = new Animated.Value(60);  
   onButtonStart(){
       _animateHandler = Animated.timing(
         this.anim.addListener(({value})=> {  
@@ -27,7 +29,7 @@ export default class Workout extends Component {
     );
 }
 
-
+  
 
 
   render() {  
@@ -41,6 +43,8 @@ export default class Workout extends Component {
             <Animated.Text style={styles.label}>  
                     {this.state.progressStatus } Sekunden  
             </Animated.Text>  
+
+           
 
             <TouchableOpacity onPress={() => this.onButtonStart()} style={styles.btnContent}>
             <View><Text>Start Animated</Text></View>
@@ -56,7 +60,7 @@ export default class Workout extends Component {
       </View>  
     );  
   }  
-}  
+}
 const styles = StyleSheet.create({  
     container: {  
     width: "100%",  

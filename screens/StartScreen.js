@@ -8,7 +8,7 @@ export default class StartScreen extends Component {
         <Text>Sporty 2.0</Text>
         <Button
           title="weiter"
-          onPress={() => this.props.navigation.navigate('onboarding')}
+          onPress={() => this.props.navigation.navigate('RunScreen')}
         />
       </View>
     );
